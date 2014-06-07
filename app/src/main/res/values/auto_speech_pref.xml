@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="auto_speech_never">0</string>
+    <string-array name="auto_speech_entries">
+        <item>Never</item>
+        <item>Wifi Only</item>
+        <item>Always</item>
+    </string-array>
+    <string-array name="auto_speech_entry_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+</resources>

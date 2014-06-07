@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">沃德蔓</string>
+    <string name="title_section1">学习记录</string>
+    <string name="title_section2">课程列表</string>
+    <string name="title_section3">设置</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_example">Example action</string>
+    <string name="action_settings">设置</string>
+    <string name="cate_plain">学习计划</string>
+    <string name="word_day">单词/每天</string>
+    <string name="title_activity_settings">设置</string>
+    <string name="cate_general">通用</string>
+    <string name="pref_auto_speech">自动朗诵</string>
+    <string name="words">{%d} 词</string>
+    <string name="goon">继续</string>
+    <string name="rest">休息</string>
+</resources>

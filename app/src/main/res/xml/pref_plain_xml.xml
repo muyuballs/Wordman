@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/cate_general">
+        <ListPreference
+            android:key="auto_speech"
+            android:title="@string/pref_auto_speech"
+            android:dialogTitle="@string/pref_auto_speech"
+            android:defaultValue="@string/auto_speech_never"
+            android:entries="@array/auto_speech_entries"
+            android:entryValues="@array/auto_speech_entry_values"
+            />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/cate_plain">
+        <EditTextPreference
+                android:key="word_day"
+                android:title="@string/word_day"
+                android:defaultValue="20"
+                android:singleLine="true"
+                android:inputType="number"
+                android:summary="@string/words"
+                />
+    </PreferenceCategory>
+</PreferenceScreen>
