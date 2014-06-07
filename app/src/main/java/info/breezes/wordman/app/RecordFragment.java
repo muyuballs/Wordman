@@ -88,7 +88,7 @@ public class RecordFragment extends Fragment implements SwipeRefreshLayout.OnRef
             }
             StudyRecord studyRecord = getItem(position);
             holder.textView.setText(studyRecord.date);
-            holder.textView1.setText(DateUtils.format(new Date(studyRecord.time), "hh:mm:ss"));
+            holder.textView1.setText(DateUtils.formatHHMMSS(studyRecord.time));
             holder.textView2.setText("学习："+studyRecord.studyCount);
             holder.textView3.setText("温习："+studyRecord.reviewCount);
             return convertView;
