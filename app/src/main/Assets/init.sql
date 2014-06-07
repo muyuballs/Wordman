@@ -5,7 +5,7 @@ INSERT INTO class VALUES ('11','四级必备词汇',4509,1,0,0,0,0);
 ----
 INSERT INTO class VALUES ('140','高考大纲词汇',3874,1,0,0,0,0);
 ----
-INSERT INTO class VALUES ('141','高考常用短语词汇',362,1,0,0,0,0);
+---INSERT INTO class VALUES ('141','高考常用短语词汇',362,1,0,0,0,0);
 ----
 INSERT INTO class VALUES ('13','考研必备词汇',5475,1,0,0,0,0);
 ----
