@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.ListFragment;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -103,13 +104,19 @@ public class LessonsFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setListAdapter(new LessonsAdapter(getActivity().getLayoutInflater()));
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                setListAdapter(new LessonsAdapter(getActivity().getLayoutInflater()));
+//            }
+//        },200);
     }
 
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        setListAdapter(new LessonsAdapter(getActivity().getLayoutInflater()));
         Log.d("Lesson", "onAttach");
 //        try {
 //            mListener = (OnFragmentInteractionListener) activity;
