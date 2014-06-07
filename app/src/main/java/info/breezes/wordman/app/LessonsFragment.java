@@ -71,7 +71,7 @@ public class LessonsFragment extends ListFragment {
             }
             holder = (Holder) convertView.getTag();
             ClassTable classTable = getItem(position);
-            holder.textView.setText(classTable.name);
+            holder.textView.setText(classTable.name+" ("+classTable.size+")");
             holder.textView1.setText(classTable.finished + "");
             holder.textView2.setText(classTable.learned + "");
             Log.d("LessonsFragment", "getView cost:" + (System.currentTimeMillis() - st));
@@ -91,6 +91,11 @@ public class LessonsFragment extends ListFragment {
             }
             super.finalize();
         }
+
+        public void reload(){
+            queryAble=queryAble.execute();
+            notifyDataSetChanged();
+        }
     }
 
 
@@ -104,12 +109,7 @@ public class LessonsFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                setListAdapter(new LessonsAdapter(getActivity().getLayoutInflater()));
-//            }
-//        },200);
+
     }
 
 
@@ -118,12 +118,6 @@ public class LessonsFragment extends ListFragment {
         super.onAttach(activity);
         setListAdapter(new LessonsAdapter(getActivity().getLayoutInflater()));
         Log.d("Lesson", "onAttach");
-//        try {
-//            mListener = (OnFragmentInteractionListener) activity;
-//        } catch (ClassCastException e) {
-//            throw new ClassCastException(activity.toString()
-//                + " must implement OnFragmentInteractionListener");
-//        }
     }
 
     @Override
@@ -132,6 +126,11 @@ public class LessonsFragment extends ListFragment {
         mListener = null;
     }
 
+    @Override
+    public void onResume() {
+        ((LessonsAdapter)this.getListAdapter()).reload();
+        super.onResume();
+    }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, final long id) {
