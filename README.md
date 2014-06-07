@@ -7,6 +7,6 @@ Wordman
 
 请参考[b3log-wordman](https://github.com/b3log/b3log-wordman)
 
-## 实现 ##
+## 其他 ##
 
-请参考[这里](https://github.com/b3log/b3log-wordman)
+也请参考[b3log-wordman](https://github.com/b3log/b3log-wordman)
