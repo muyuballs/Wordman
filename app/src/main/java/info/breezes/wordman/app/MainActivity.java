@@ -14,9 +14,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
+import android.widget.Toast;
 import info.breezes.wordman.utils.StreamUtils;
+import org.apache.commons.compress.archivers.ArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.compressors.lzma.LZMACompressorInputStream;
 
-import java.io.IOException;
+import java.io.*;
 
 
 public class MainActivity extends Activity
@@ -43,22 +47,71 @@ public class MainActivity extends Activity
                 public void run() {
                     initData();
                 }
-            },300);
+            }, 300);
         }
     }
 
     private void initData() {
         progressDialog = new ProgressDialog(this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setTitle("提示");
         progressDialog.setMessage("正在初始化，请稍等...");
         progressDialog.setCancelable(false);
         progressDialog.setMax(100);
         final Handler handler = new Handler();
         new Thread(new Runnable() {
+            private void saveZipEntry(ArchiveEntry zipEntry, TarArchiveInputStream inputStream, File sqlCache) throws IOException {
+                FileOutputStream fileOutputStream = new FileOutputStream(new File(sqlCache, zipEntry.getName()));
+                byte[] buffer = new byte[1024];
+                int count;
+                while ((count = inputStream.read(buffer)) != -1) {
+                    fileOutputStream.write(buffer, 0, count);
+                }
+                fileOutputStream.close();
+            }
+
+            private void clearSqlCache(File sqlCache) {
+                if(sqlCache.exists()){
+                    if(sqlCache.isDirectory()){
+                        File files[]=sqlCache.listFiles();
+                        for(File f: files){
+                            if(f.isFile()){
+                                f.delete();
+                            }else if(f.isDirectory()){
+                                clearSqlCache(sqlCache);
+                            }
+                        }
+                    }
+                    sqlCache.delete();
+                }
+            }
+
             @Override
             public void run() {
                 AssetManager assetManager = getResources().getAssets();
                 try {
+                    InputStream inputStream = assetManager.open("classes.tar.lz", AssetManager.ACCESS_STREAMING);
+                    String tmpFileName = System.nanoTime() + ".tar";
+                    File lzmaOutFile = new File(getExternalCacheDir(), tmpFileName);
+                    OutputStream outputStream = new FileOutputStream(lzmaOutFile);
+                    LZMACompressorInputStream lzmaCompressorInputStream = new LZMACompressorInputStream(inputStream);
+                    StreamUtils.copyStream(lzmaCompressorInputStream, outputStream);
+                    lzmaCompressorInputStream.close();
+                    inputStream.close();
+                    outputStream.close();
+
+                    File sqlCache = new File(getExternalCacheDir(), "sqlCache");
+                    if (!sqlCache.exists()) {
+                        sqlCache.mkdirs();
+                    }
+                    FileInputStream fileInputStream = new FileInputStream(lzmaOutFile);
+                    TarArchiveInputStream zipInputStream = new TarArchiveInputStream(fileInputStream);
+                    ArchiveEntry zipEntry = zipInputStream.getNextEntry();
+                    while (zipEntry != null) {
+                        saveZipEntry(zipEntry, zipInputStream, sqlCache);
+                        zipEntry = zipInputStream.getNextEntry();
+                    }
+                    lzmaOutFile.delete();
                     updateProgress(progressDialog, (int) (1 / 8.0 * 100), 0, handler);
                     String[] sqlArray = StreamUtils.readStrings(assetManager.open("init.sql", AssetManager.ACCESS_STREAMING), "UTF-8");
                     SQLiteDatabase db = WordmanApplication.current.getDbHelper().getWritableDatabase();
@@ -68,23 +121,24 @@ public class MainActivity extends Activity
                         Log.d("Init", sql);
                         if (!sql.startsWith("---")) {
                             db.execSQL(sql);
-                            updateProgress(progressDialog, (int) ((i + 1) / sqlArray.length * 100), 1, handler);
+                            updateProgress(progressDialog, (int) ((i + 1) / sqlArray.length * 100.0), 1, handler);
                         }
                     }
                     for (int i = 1; i < 8; i++) {
                         updateProgress(progressDialog, (int) ((i + 1) / 8.0 * 100), 0, handler);
-                        sqlArray = StreamUtils.readStrings(assetManager.open("classes/class-" + i + ".sql", AssetManager.ACCESS_STREAMING), "UTF-8");
+                        sqlArray = StreamUtils.readStrings(new FileInputStream(new File(sqlCache, "class-" + i + ".sql")), "UTF-8");
                         for (int j = 0; j < sqlArray.length; j++) {
                             String sql = sqlArray[j];
                             Log.d("Init", sql);
                             if (!sql.startsWith("---")) {
                                 db.execSQL(sql);
-                                updateProgress(progressDialog, (int) ((j + 1) / sqlArray.length * 100), 1, handler);
+                                updateProgress(progressDialog, (int) ((j + 1) / sqlArray.length * 100.0), 1, handler);
                             }
                         }
                     }
                     db.setTransactionSuccessful();
                     db.endTransaction();
+                    clearSqlCache(sqlCache);
                     WordmanApplication.current.setBoolean("init", true);
                     handler.post(new Runnable() {
                         @Override
@@ -96,6 +150,8 @@ public class MainActivity extends Activity
                     e.printStackTrace();
                 }
             }
+
+
         }).start();
         progressDialog.show();
     }
@@ -131,7 +187,7 @@ public class MainActivity extends Activity
         Fragment fragment = null;
         switch (position) {
             case 0:
-                fragment=new RecordFragment();
+                fragment = new RecordFragment();
                 break;
             case 1:
                 fragment = new LessonsFragment();
