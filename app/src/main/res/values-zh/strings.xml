@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">沃德蔓</string>
+    <string name="app_name">沃德曼</string>
     <string name="title_section1">学习记录</string>
     <string name="title_section2">课程列表</string>
     <string name="title_section3">设置</string>
