@@ -22,9 +22,9 @@ import info.breezes.wordman.utils.DateUtils;
 import java.util.Date;
 
 
-public class RecordFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class RecordFragment extends Fragment  {
 
-    private SwipeRefreshLayout swipeRefreshLayout;
+
     private ListView listView;
 
     class StudyRecordAdapter extends BaseAdapter {
@@ -108,11 +108,7 @@ public class RecordFragment extends Fragment implements SwipeRefreshLayout.OnRef
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_record, null);
-        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
-        swipeRefreshLayout.setOnRefreshListener(this);
-        swipeRefreshLayout.setColorScheme(R.color.red, R.color.green, R.color.blue, R.color.yellow);
-        listView = (ListView) view.findViewById(R.id.listView);
-        listView.setAdapter(new StudyRecordAdapter(inflater, getActivity()));
+
         return view;
     }
 
@@ -126,13 +122,4 @@ public class RecordFragment extends Fragment implements SwipeRefreshLayout.OnRef
         super.onDetach();
     }
 
-
-    @Override
-    public void onRefresh() {
-        new Handler().postDelayed(new Runnable() {
-            public void run() {
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        }, 1000);
-    }
 }
